@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+dat <- read.csv('simulated_data.csv')
+```
+
+Variance-covariance matrix of the data. It's pretty much diagonal!
+```{r options(width=180)}
+X <- as.matrix(dat[,-1])
+N <- nrow(X)
+p <- ncol(X)
+Sigma.hat <- 1/N * t(X) %*% X
+image(Sigma.hat[p:1,], main='Data covariance matrix')
+```
+
+```{r}
+round(Sigma.hat[1:10, 1:10], 1)
+```
+
+```{r}
+pairs(X[,1:5])
+```
+
+Data are simulated using the following model:
+$$ y_i \sim {\rm Pois}\left(\Lambda(\eta_i)\right), \quad \eta_i = x_i^\top\theta+\varepsilon_i.
+$$
+
+## Basic frequentist GLM
+```{r}
+fit.all <- glm(y ~ ., data = dat, family = 'poisson')
+summary(fit.all)
+image(vcov(fit.all), main = 'Poisson regression estimator: covariance')
+# SparseM.image
+```
+
+## Basic Bayesian GLM (normal priors)
+
+```{r}
+library(rstanarm)
+fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
+                    )
+summary(fit.all)
+```
+
+
+The BoomSpikeSlab package implements a slab-and-spike poisson regression
+model.
+
+```{r}
+library(BoomSpikeSlab)
+set.seed(123)
+niter = 1e3
+y <- dat[,'y']
+X.design <- cbind(alpha=1, X)
+prior <- SpikeSlabPrior(x=X.design, y=y,
+                        expected.model.size = 10,
+                        prior.inclusion.probabilities = rep(0.5, 21))
+fit <- poisson.spike(y ~ ., data = dat, niter = niter,
+                     prior = prior)
+summary(fit)
+plot(fit)
+```
+
+```{r}
+library(coda)
+fit.ss <- mcmc(fit$beta, start = niter/4)
+summary(fit.ss)
+```
+
+```{r}
+bayesplot::mcmc_trace(fit$beta, n_warmup = niter/4)
+```
+
+
