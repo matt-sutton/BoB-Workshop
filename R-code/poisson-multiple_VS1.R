@@ -13,7 +13,9 @@ myBUGScode <- nimbleCode({
   alpha ~ dnorm(log(10),1)                   # Intercept 
   tau ~ dgamma(1.0E-4,1.0E-4)
   for(j in 1:NMarkers)   {
-    beta[j] ~ dnorm(0,1)                # Regression coefficient 
+    betaT[j] ~ dnorm(0,1)                # Regression coefficient 
+    Ind[j] ~ dbern(PInd)       # Indicator 
+    beta [j] <- Ind[j]*betaT[j]
   }
   for(i in 1:N) {
     er[i] ~ dnorm(0, tau)
@@ -23,7 +25,7 @@ myBUGScode <- nimbleCode({
   }
 })
 
-constants <- list(N = N, NMarkers=NMarkers)
+constants <- list(N = N, NMarkers=NMarkers, PInd = 0.2)
 dimensions = list(beta = NMarkers,
                   Ind =  NMarkers,
                   lambda =  N,
@@ -36,7 +38,7 @@ myModel <- nimbleModel(myBUGScode,
                        dimensions = dimensions)
 
 myModel$setData(list(y = dataset[,1], X = as.matrix(dataset[,-1])))
-myModel$setInits(list(alpha=1, tau = 0.5, beta = matrix(0,nrow = 1, ncol = NMarkers), er = rnorm(N,0,1)))
+myModel$setInits(list(alpha=1, tau = 0.5, betaT = matrix(0,nrow = 1, ncol = NMarkers), er = rnorm(N,0,1)))
 
 myMCMC <- buildMCMC(myModel)
 compiled <- compileNimble(myModel, myMCMC)
