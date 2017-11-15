@@ -20,16 +20,18 @@ posterior <- read_csv("posterior_summary/thinned_MCMC.csv") # x1 is the row name
 
 Which variables are zero more often than others?
 
-``` {r}
-head(posterior,10)
-
+``` {r echo=F}
 select(posterior, starts_with("ind"),X1) %>%
   gather(key, value, -X1) %>%
   group_by(key) %>%
-  summarise(non_zero_freq =  mean(value))
+  summarise(non_zero_freq =  mean(value)) %>%
+  mutate(num_key = parse_number(key)) %>%
+  arrange(num_key) %>%
+  select(-num_key) %>% kable
 ```
 
-We wish to set a visualisation up for three variables that indicate the relationship between these variables when they are non-zero and when they are zero. In this case, we have eight particularly states for whether each variable is zero or not. We draw inspiration from the `chmod` permission sytem
+We wish to set a visualisation up for three variables that indicate the relationship between these variables when they are non-zero and when they are zero. In this case, we have eight particularly states for whether each variable is zero or not. We draw inspiration from the `chmod` permission sytem. 
+
 
 ``` {r, echo=T, fig.cap="Eight states of regression weights for three indicator parameters"}
 expand.grid(x1 =c(0,1), x2=c(0,1), x3=c(0,1)) %>%
@@ -39,9 +41,9 @@ expand.grid(x1 =c(0,1), x2=c(0,1), x3=c(0,1)) %>%
   kable
 ```
 
+Applying this, we allocate each MCMC draw for our three parameters, $\beta_5, \beta_9, \beta_{15}$, to one of these groups and label them with human friendly names that relate to their geometry. We consider parameter draws for which none of the parameters are zero as the *dinner roll* -- a fully 3D ellipsoid which is the first group of interest. When one of the three variables are zero, this projects the draws which are non-zero on to one of the axes planes that define the space. These are labelled as *pita* bread, a flat and misshapen collection of MCMC draws. When two parameters are zero, the points are projected onto one of three orthogonal axes, and stick out from the origin like *grissini* in a cup. This is where the opacity is most important, as no one wants grissini that have been overplotted. When all three parameters are zero, the parameter draws collapse to a *donut hole* placed at the origin.
 
-
-``` {r echo=FALSE}
+``` {r echo=FALSE, fig.cap="Interact with this plotly plot by rotating the axes in 3D space. You can single click a classification to turn it off, or double click one to turn all others off."}
 is.zero <- function(x){
   
   return(sum((x != 0) * c(4,2,1)))
@@ -81,6 +83,7 @@ with(to_plot, plot_ly (type = "scatter3d",
 ```
 
 ``` {r, include=FALSE, eval=FALSE, echo=FALSE}
+# trace plots and probaility of inclusion
 select(posterior, starts_with('beta')) %>%
   mutate(idx =1:nrow(.)) %>%
   gather(key, value, -idx) %>%
