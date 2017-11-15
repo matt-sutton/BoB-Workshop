@@ -1,6 +1,15 @@
 ---
 title: "Scatterplots Of Unselected Regression Dimensions Ostensibly Uncovering Group Hierarchies"
 output: html_document
+author:
+  - Matt
+  - Sam
+  - Grace
+  - Anton
+  - Saras
+  - Anthony
+  - Knife Matt
+  - Nick Golding
 ---
 
 ```{r setup, include=FALSE}
@@ -29,6 +38,29 @@ select(posterior, starts_with("ind"),X1) %>%
   arrange(num_key) %>%
   select(-num_key) %>% kable
 ```
+
+
+``` {r echo=FALSE}
+# trace plots and probaility of inclusion
+select(posterior, starts_with('beta')) %>%
+  mutate(idx =1:nrow(.)) %>%
+  gather(key, value, -idx) %>%
+  ggplot(data=., aes(x=idx, y=value)) +
+  geom_line() +
+  facet_wrap(~ key)
+
+# select(posterior, starts_with('Ind')) %>%
+#   mutate(idx =1:nrow(.)) %>%
+#   gather(key, value, -idx) %>%
+#   group_by(key) %>%
+#   summarise(Inclusion = mean(value)) %>%
+#   mutate(realkey = parse_number(key)) %>%
+#   ggplot(data=., aes(x=realkey, y=Inclusion)) +
+#   geom_col()
+
+```
+
+
 
 We wish to set a visualisation up for three variables that indicate the relationship between these variables when they are non-zero and when they are zero. In this case, we have eight particularly states for whether each variable is zero or not. We draw inspiration from the `chmod` permission sytem. 
 
@@ -80,25 +112,5 @@ with(to_plot, plot_ly (type = "scatter3d",
                       yaxis = list(title = "beta[9]"),
                       zaxis = list(title = "beta[15]"),
                       title = 'points only'))
-```
-
-``` {r, include=FALSE, eval=FALSE, echo=FALSE}
-# trace plots and probaility of inclusion
-select(posterior, starts_with('beta')) %>%
-  mutate(idx =1:nrow(.)) %>%
-  gather(key, value, -idx) %>%
-  ggplot(data=., aes(x=idx, y=value)) +
-  geom_line() +
-  facet_wrap(~ key)
-
-select(posterior, starts_with('Ind')) %>%
-  mutate(idx =1:nrow(.)) %>%
-  gather(key, value, -idx) %>%
-  group_by(key) %>%
-  summarise(Inclusion = mean(value)) %>%
-  mutate(realkey = parse_number(key)) %>%
-  ggplot(data=., aes(x=realkey, y=Inclusion)) +
-  geom_col()
-
 ```
 
