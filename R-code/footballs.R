@@ -53,10 +53,51 @@ is.zero <- function(x){
 
 
 to_plot <- transmute(posterior, 
-                     x = `betaT[9]`*`Ind[9]`, 
-                     y = `betaT[10]`*`Ind[10]`,
-                     z = `betaT[20]`*`Ind[20]`) %>%
+                     x = `betaT[5]`*`Ind[5]`, 
+                     y = `betaT[9]`*`Ind[9]`,
+                     z = `betaT[15]`*`Ind[15]`) %>%
   mutate(sample =1:nrow(.)) %>%
   split(.$sample) %>%
   map_df(~mutate(.x, indicator = is.zero(.x[,1:3])))
+
+to_plot %<>% mutate(bread = c("Donut hole",
+                              "Grissini 1",
+                              "Grissini 2",
+                              "Pita 1",
+                              "Grissini 3",
+                              "Pita 2",
+                              "Pita 3",
+                              "Dinner roll")[indicator + 1])
+
+with(to_plot, plot_ly (type = "scatter3d",
+                         x = x, 
+                         y = y,
+                         z = z,
+                         mode="markers",
+                       color=bread,
+                       opacity = 0.25)) %>%
+  layout(scene = list(xaxis = list(title = '5'),
+                      yaxis = list(title = '9'),
+                      zaxis = list(title = '15'),
+                      title = 'points only'))
+
+
+windows()
+select(posterior, starts_with('beta')) %>%
+  mutate(idx =1:nrow(.)) %>%
+  gather(key, value, -idx) %>%
+  ggplot(data=., aes(x=idx, y=value)) +
+  geom_line() +
+  facet_wrap(~ key)
+
+
+select(posterior, starts_with('Ind')) %>%
+  mutate(idx =1:nrow(.)) %>%
+  gather(key, value, -idx) %>%
+  group_by(key) %>%
+  summarise(Inclusion = mean(value)) %>%
+  mutate(realkey = parse_number(key)) %>%
+  ggplot(data=., aes(x=realkey, y=Inclusion)) +
+  geom_col()
+
 
