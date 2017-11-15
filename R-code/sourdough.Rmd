@@ -10,6 +10,7 @@ author:
   - Anthony
   - Knife Matt
   - Nick Golding
+  - Leah South
 ---
 
 ```{r setup, include=FALSE}
@@ -73,7 +74,7 @@ expand.grid(x1 =c(0,1), x2=c(0,1), x3=c(0,1)) %>%
   kable
 ```
 
-Applying this, we allocate each MCMC draw for our three parameters, $\beta_5, \beta_9, \beta_{15}$, to one of these groups and label them with human friendly names that relate to their geometry. We consider parameter draws for which none of the parameters are zero as the *dinner roll* -- a fully 3D ellipsoid which is the first group of interest. When one of the three variables are zero, this projects the draws which are non-zero on to one of the axes planes that define the space. These are labelled as *pita* bread, a flat and misshapen collection of MCMC draws. When two parameters are zero, the points are projected onto one of three orthogonal axes, and stick out from the origin like *grissini* in a cup. This is where the opacity is most important, as no one wants grissini that have been overplotted. When all three parameters are zero, the parameter draws collapse to a *donut hole* placed at the origin.
+Applying this, we allocate each MCMC draw for our three parameters, $\beta_5, \beta_9, \beta_{15}$, to one of these groups and label them with human friendly names that relate to their geometry. We consider parameter draws for which none of the parameters are zero as the *dinner roll* -- a fully 3D ellipsoid which is the first group of interest. When one of the three variables are zero, this projects the draws which are non-zero on to one of the axes planes that define the space. These are labelled as *pita* bread, a flat and misshapen collection of MCMC draws. Notably, the pita are not the shadow of the dinner roll. When two parameters are zero, the points are projected onto one of three orthogonal axes, and stick out from the origin like *grissini* in a cup. This is where the opacity is most important, as no one wants grissini that have been overplotted. When all three parameters are zero, the parameter draws collapse to a *donut hole* placed at the origin.
 
 ``` {r echo=FALSE, fig.cap="Interact with this plotly plot by rotating the axes in 3D space. You can single click a classification to turn it off, or double click one to turn all others off."}
 is.zero <- function(x){
