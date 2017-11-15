@@ -41,6 +41,7 @@ image(vcov(fit.all), main = 'Poisson regression estimator: covariance')
 ```{r}
 library(rstanarm)
 fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
+                    
                     )
 summary(fit.all)
 ```
@@ -52,16 +53,26 @@ model.
 ```{r}
 library(BoomSpikeSlab)
 set.seed(123)
-niter = 1e3
+niter = 1e4
 y <- dat[,'y']
 X.design <- cbind(alpha=1, X)
 prior <- SpikeSlabPrior(x=X.design, y=y,
-                        expected.model.size = 10,
-                        prior.inclusion.probabilities = rep(0.5, 21))
+                        expected.model.size = 0,
+                        prior.inclusion.probabilities = rep(0.1, 21)
+                        )
 fit <- poisson.spike(y ~ ., data = dat, niter = niter,
                      prior = prior)
 summary(fit)
 plot(fit)
+```
+```{r}
+library(coda)
+fit.coda <- mcmc(fit$beta)
+summary(fit.coda)
+
+```
+```{r}
+coda::effectiveSize(fit.coda)
 ```
 
 ```{r}

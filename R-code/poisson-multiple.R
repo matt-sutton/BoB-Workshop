@@ -1,3 +1,7 @@
+library(nimble)
+rm(list=ls())
+set.seed(123)
+
 dataset <- read.csv("simulated_data.csv")
 NMarkers <- 20
 y <- dataset[,1]
@@ -50,5 +54,27 @@ colMeans(thinnedsample)
 plot(thinnedsample[,2])
 plot(density(thinnedsample[,2]))
 
+library(coda)
+fit <- mcmc(thinnedsample)
+s <- summary(fit, start=M.burnin+1)
+barplot(s$statistics[grep('beta', rownames(s$statistics)),'Mean'],
+        main = expression(E(beta~'|'~y)))
 
+load('true.Rda') # populates 'theta' vector
+library(tidyverse)
+varnames = rownames(s$statistics)[grep('beta', rownames(s$statistics))]
+Ebeta = s$statistics[varnames, 'Mean']
+quantbeta = s$quantiles[varnames, c('2.5%','97.5%')]
+posterior <- data.frame(variable=varnames, beta=as.factor(1:20), Ebeta, quantbeta, true.theta=theta)
+ggplot(posterior, aes(x=beta, y=Ebeta, ymin=X2.5., ymax=X97.5.)) +
+  geom_point() +
+  geom_linerange() +
+  geom_point(aes(y=true.theta), color='red') +
+  ggtitle('Ordinary regression model', subtitle='Posterior estimate vs true value') +
+  labs(caption="Source: Matt's simulated data and BUGS model") +
+  geom_text(x=11, y=0.2, label='True value', color='red') +
+  geom_text(x=6, y=0.4, label='Posterior 95% CI', color='black') +
+  theme_bw(15)
+ggsave('poisson_regression.pdf', width=8, height = 6)
 
+save(thinnedsample, posterior, file='poisson-multiple.Rda')

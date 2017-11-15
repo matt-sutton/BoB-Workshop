@@ -1,3 +1,7 @@
+rm(list=ls())
+set.seed(123)
+library(nimble)
+
 dataset <- read.csv("simulated_data.csv")
 NMarkers <- 20
 y <- dataset[,1]
@@ -52,5 +56,64 @@ colMeans(thinnedsample)
 plot(thinnedsample[,2])
 plot(density(thinnedsample[,2]))
 
+cs <- colnames(thinnedsample)
+beta.names <- cs[grep('beta', cs)]
+ind.names  <- cs[grep('Ind', cs)]
 
+thetas <- thinnedsample[,beta.names] * thinnedsample[,ind.names]
 
+library(coda)
+# fit <- mcmc(thinnedsample)
+fit <- mcmc(thetas)
+s <- summary(fit, start=M.burnin+1)
+barplot(s$statistics[grep('beta', rownames(s$statistics)),'Mean'],
+        main = expression(E(beta~'|'~y)))
+
+load('true.Rda') # populates 'theta' vector
+library(tidyverse)
+varnames = rownames(s$statistics)[grep('beta', rownames(s$statistics))]
+Ebeta = s$statistics[varnames, 'Mean']
+quantbeta = s$quantiles[varnames, c('2.5%','97.5%')]
+posterior <- data.frame(variable=varnames, beta=as.factor(1:20), Ebeta, quantbeta, true.theta=theta)
+ggplot(posterior, aes(x=beta, y=Ebeta, ymin=X2.5., ymax=X97.5.)) +
+  geom_point() +
+  geom_linerange() +
+  geom_point(aes(y=true.theta), color='red') +
+  ggtitle(label='Variable selection model', subtitle = "Posterior estimate vs true value") +
+  labs(caption="Source: Matt's simulated data and BUGS model") +
+  geom_text(x=3, y=0.2, label='True value', color='red') +
+  geom_text(x=16, y=0.15, label='Posterior 95% CI', color='black') +
+  xlab('theta') + ylab('Etheta') +
+  theme_bw(15)
+ggsave('poisson_regression_variable_selection.pdf', width=8, height = 6)
+save(thetas, posterior, file='poisson-multiple_VS1.Rda')
+
+#load('poisson-multiple_VS1.Rda')
+
+# trace plots for variable inclusion
+spikes <- thinnedsample[,ind.names] %>%
+  as.tibble() %>%
+  mutate(iter=1:nrow(thinnedsample)) %>%
+  gather(key = 'variable', value='spike', -iter, factor_key=TRUE) %>%
+  mutate(groupid = cumsum(c(1, abs(diff(spike))))) %>%
+  group_by(groupid, variable, spike) %>%
+  summarize(start=min(iter), end=max(iter))
+
+ggplot(spikes, aes(x=start, y=variable, group=variable)) +
+    geom_line() +
+    geom_label(x=1500, y=5, label='Draws with zeroed variable') +
+    ggtitle("'Spike' traceplot by variable") +
+    ylab('Variable') + xlab('Iteration') +
+    theme_bw(15)
+
+# probability of inclusion
+inc <- colMeans(thinnedsample[,ind.names])
+inc.data <- data.frame(variable=as.factor(1:20), inc.prob = inc)
+ggplot(inc.data, aes(x=variable, y=inc.prob)) +
+  geom_bar(stat='identity') +
+  ggtitle('Variable inclusion probability', subtitle="Spike-and-slab model (Matt's implementation") +
+#  labs(caption="Source: Matt's simulated data and BUGS model") +
+  xlab('Variable') + ylab('Inclusion probability') +
+  theme_bw(15)
+ggsave('inclusion_probability.pdf', width=8, height=6)
+ggsave('inclusion_probability.png', width=6, height=6)
