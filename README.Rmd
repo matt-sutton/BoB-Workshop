@@ -1,0 +1,173 @@
+---
+output: github_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Bayes on the Beach Workshop 2017
+================================
+
+## Workshop Aims:
+
++ Review some Bayesian Variable Selection methods (O’Hara and Sillanpaa sugested material)
++ Some coding in R (Visualisation | Coding | Methods)
++ Analysis of a simple model with variable selection.
+
+## The task
+### Data Model:
+
+```{r, out.width = "220px", echo=FALSE, fig.align='center'}
+include_graphics("datamodel.png")
+```
+
+R code for simulation from data model (O’Hara and Sillanpaa):
+
+```{r}
+set.seed(1)
+## Data for the simulations see description under eq (2):
+
+n <- 200; p <- 20
+alpha <- log(10)
+sig_e <- 0.75
+
+x <- matrix(  rnorm(n = n*p, mean = 0, sd = 1), 
+              nrow = n, ncol = p)
+
+e <- rnorm(n = n, mean = 0, sd = sig_e)
+theta <- 0.3 + 0.3*(1:20/10.5 - 1)
+
+## Simulate for this dataset
+mu <- alpha + x%*%theta + e
+lambda <- exp(mu)
+y <- rpois(n, lambda)
+
+dataset <- data.frame(y=y, x=x)
+#write.csv(x = dataset, file = "simulated_data.csv", row.names = F)
+```
+
+The regression parameters \(\theta_j\) have a mean of 0.3, rough range (0, 0.6). While not exact zeros, the aim is to investigate the inference (eg probability of inclusion) and sparse estiamtion in Bayesian framework.
+
+```{r}
+#plot(1:length(theta), theta, xlab = "Regression parameter", ylab = "Theta")
+```
+
+### Modelling
+
+Priors for the model (eq. 3, 4 of O’Hara and Sillanpaa)
+```{r, out.width = "220px", echo=FALSE, fig.align='center'}
+include_graphics("priors.png")
+```
+
+Methods implemented in Bugs were provided in supplment for the original paper. See [supplement.html](supplement.html).
+
+## Example solution
+
+The most direct approach to variable selection is to set the slab, \(\theta_j | (I_j = 1) \) equal to $\beta_j$ and spike $\theta_j | (I_j = 0)$ equal to zero. A simple example solution using the Kuo and Mallick method sets \(\theta_j = I_j \beta_j\) which assumes independance \(P(I_j, \beta_j) = P(I_j)P(\beta_j)\).
+
+Using the package nible:
+```{r, warning=F, message=F}
+library(nimble)
+dataset <- read.csv("simulated_data.csv")
+n <- 200; p <- 20
+y <- dataset[,1]
+x <- as.matrix(dataset[,-1])
+
+# Set MCMC parameters
+M.burnin <- 10000
+M <- 5000
+n.thin <- 5
+
+myBUGScode <- nimbleCode({
+  Pind <- 0.5
+  alpha ~ dnorm(log(10),1)             # Intercept 
+  tau ~ dgamma(1.0E-4,1.0E-4)          # precision param
+  for(j in 1:p) {
+    Ind[j] ~ dbern(Pind)               # Indicator
+    beta[j] ~ dnorm(0,1)               # Conditional Regression coefficient
+    theta[j] <- Ind[j]*beta[j]
+  }
+  for(i in 1:n) {
+    er[i] ~ dnorm(0, tau)
+    mu[i] <- alpha + inprod(theta[], X[i,]) + er[i]
+    lambda[i] <- exp(mu[i])
+    y[i] ~ dpois(lambda[i])          # Likelihood 
+  }
+})
+
+```
+
+For nimble, define the constants and dimensions, parse in model.
+
+```{r, warning=F, message=F}
+constants <- list(n = n, p=p)
+dimensions = list(beta = p,
+                  theta = p,
+                  Ind =  p,
+                  lambda =  n,
+                  X = c(n,p),
+                  er = n,
+                  mu = n)
+myModel <- nimbleModel(myBUGScode, 
+                       constants = constants, 
+                       dimensions = dimensions)
+```
+
+Give the model the data, inital values and build the MCMC.
+
+```{r, warning=F, message=F}
+myModel$setData(
+  list(y = dataset[,1], X = as.matrix(dataset[,-1]))
+  )
+
+myModel$setInits(
+  list(alpha=1, tau = 0.5, beta = matrix(0,nrow = 1, ncol = p), er = rnorm(n,0,1))
+  )
+
+myMCMC <- buildMCMC(myModel)
+```
+
+Using Nible, compute the mcmc and plot the thinned samples:
+
+```{r, warning=F, cache=T}
+compiled <- compileNimble(myModel, myMCMC)
+
+compiled$myMCMC$run(M.burnin + M*n.thin)
+samples <- as.matrix(compiled$myMCMC$mvSamples)
+
+thinnedsample <- samples[M.burnin + seq(from = 1,by = n.thin, 
+                             to = M*n.thin),]
+```
+
+Plot Density of coeffieicnts for \(\theta_1\) values.
+
+```{r, warning=F}
+par(mfrow=c(2,2))
+plot(density(thinnedsample[,"beta[1]"]*thinnedsample[,"Ind[1]"]), ylab = expression(theta), main = "Density for Theta[1]")
+plot(density(thinnedsample[,"beta[1]"]), ylab = expression(beta), main = "Density for Beta[1]")
+plot(density(thinnedsample[,"Ind[1]"]), ylab = expression(theta), main = "Density for Ind[1]")
+plot(samples[-c(1:M.burnin),"beta[1]"],  type = 'l', xlab = 'iteration',  ylab = expression(beta), main = "trace for Beta[1]")
+par(mfrow=c(1,1))
+```
+
+The \(\theta_1\) parameter is strongly consentrated at zero, traceplots for beta show convergence for the betat parameter and density for \(I_1\) also indicate evidence that this variable does not contribute much to the regression. The true value for \(\theta_1 = 0.02857143\) which is very small, the posterior mean estimate is `r round(mean(thinnedsample[,"beta[1]"]*thinnedsample[,"Ind[1]"]),6)`. Using the skimr package to see additional results:
+
+```{r, echo=F}
+library(skimr)
+skim_format(numeric = list(digits = 3))
+res <- data.frame(thinnedsample[,1:20]*thinnedsample[,22:41])
+res <- cbind(res, thinnedsample[,1:20])
+colnames(res) <- c(paste0("beta_0",1:9),paste0("beta_",10:20),paste0("Ind_0",1:9), paste0("Ind_",10:20))
+
+skim_with(numeric = list(missing=NULL, complete=NULL))
+
+res %>%
+  skim(.) %>%
+  kable(.)
+```
+
+
+
+
