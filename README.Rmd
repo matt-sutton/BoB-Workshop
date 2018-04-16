@@ -131,7 +131,7 @@ myMCMC <- buildMCMC(myModel)
 
 Using Nible, compute the mcmc and plot the thinned samples:
 
-```{r, warning=F, cache=T}
+```{r, warning=F, cache=T, message=F}
 compiled <- compileNimble(myModel, myMCMC)
 
 compiled$myMCMC$run(M.burnin + M*n.thin)
@@ -140,6 +140,8 @@ samples <- as.matrix(compiled$myMCMC$mvSamples)
 thinnedsample <- samples[M.burnin + seq(from = 1,by = n.thin, 
                              to = M*n.thin),]
 ```
+
+### Plots and analysis
 
 Plot Density of coeffieicnts for \(\theta_1\) values.
 
@@ -152,7 +154,15 @@ plot(samples[-c(1:M.burnin),"beta[1]"],  type = 'l', xlab = 'iteration',  ylab =
 par(mfrow=c(1,1))
 ```
 
-The \(\theta_1\) parameter is strongly consentrated at zero, traceplots for beta show convergence for the betat parameter and density for \(I_1\) also indicate evidence that this variable does not contribute much to the regression. The true value for \(\theta_1 = 0.02857143\) which is very small, the posterior mean estimate is `r round(mean(thinnedsample[,"beta[1]"]*thinnedsample[,"Ind[1]"]),6)`. Using the skimr package to see additional results:
+The \(\theta_1\) parameter is strongly consentrated at zero, traceplots for beta show convergence for the betat parameter and density for \(I_1\) also indicate evidence that this variable does not contribute much to the regression. The true value for \(\theta_1 = 0.02857143\) which is very small, the posterior mean estimate is `r round(mean(thinnedsample[,"beta[1]"]*thinnedsample[,"Ind[1]"]),6)`.
+
+Traceplots show some potential issues for parameters, eg \(\theta_{12}\) with trace plot:
+
+```{r}
+plot(samples[-c(1:M.burnin),"beta[12]"],  type = 'l', xlab = 'iteration',  ylab = expression(beta), main = "trace for Beta[12]")
+```
+
+Using the skimr package to see posterior summary results:
 
 ```{r, echo=F}
 library(skimr)
@@ -168,6 +178,8 @@ res %>%
   kable(.)
 ```
 
+## Conserns 
 
-
-
++ Results for the variable selection are not stable using the  Kuo and Mallick method (also reported in O’Hara and Sillanpaa). Need a better method for variable selection.
++ Very simple method but appears to perform poorly on this dataset.
++ Additional graphical exploration would provide further insight.

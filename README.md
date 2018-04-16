@@ -124,13 +124,7 @@ Using Nible, compute the mcmc and plot the thinned samples:
 
 ``` r
 compiled <- compileNimble(myModel, myMCMC)
-```
 
-    ## compiling... this may take a minute. Use 'showCompilerOutput = TRUE' to see C++ compiler details.
-
-    ## compilation finished.
-
-``` r
 compiled$myMCMC$run(M.burnin + M*n.thin)
 ```
 
@@ -145,6 +139,8 @@ samples <- as.matrix(compiled$myMCMC$mvSamples)
 thinnedsample <- samples[M.burnin + seq(from = 1,by = n.thin, 
                              to = M*n.thin),]
 ```
+
+### Plots and analysis
 
 Plot Density of coeffieicnts for *θ*<sub>1</sub> values.
 
@@ -162,7 +158,17 @@ plot(samples[-c(1:M.burnin),"beta[1]"],  type = 'l', xlab = 'iteration',  ylab =
 par(mfrow=c(1,1))
 ```
 
-The *θ*<sub>1</sub> parameter is strongly consentrated at zero, traceplots for beta show convergence for the betat parameter and density for *I*<sub>1</sub> also indicate evidence that this variable does not contribute much to the regression. The true value for *θ*<sub>1</sub> = 0.02857143 which is very small, the posterior mean estimate is 3.710^{-5}. Using the skimr package to see additional results:
+The *θ*<sub>1</sub> parameter is strongly consentrated at zero, traceplots for beta show convergence for the betat parameter and density for *I*<sub>1</sub> also indicate evidence that this variable does not contribute much to the regression. The true value for *θ*<sub>1</sub> = 0.02857143 which is very small, the posterior mean estimate is 3.710^{-5}.
+
+Traceplots show some potential issues for parameters, eg *θ*<sub>12</sub> with trace plot:
+
+``` r
+plot(samples[-c(1:M.burnin),"beta[12]"],  type = 'l', xlab = 'iteration',  ylab = expression(beta), main = "trace for Beta[12]")
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+Using the skimr package to see posterior summary results:
 
     ## 
     ## Attaching package: 'skimr'
@@ -219,3 +225,10 @@ The *θ*<sub>1</sub> parameter is strongly consentrated at zero, traceplots for 
     ## Ind_18     5000   1          0         1         1        1       1        1        ▁▁▁▇▁▁▁▁ 
     ## Ind_19     5000   1          0         1         1        1       1        1        ▁▁▁▇▁▁▁▁ 
     ## Ind_20     5000   1          0         1         1        1       1        1        ▁▁▁▇▁▁▁▁
+
+Conserns
+--------
+
+-   Results for the variable selection are not stable using the Kuo and Mallick method (also reported in O’Hara and Sillanpaa). Need a better method for variable selection.
+-   Very simple method but appears to perform poorly on this dataset.
+-   Additional graphical exploration would provide further insight.
