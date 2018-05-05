@@ -1,8 +1,9 @@
-R Notebook
+Exploration and Boom Spike-Slab package
 ================
+Alex Cooper
 
 ``` r
-dat <- read.csv('simulated_data.csv')
+dat <- read.csv('../simulated_data.csv')
 ```
 
 Variance-covariance matrix of the data. It's pretty much diagonal!
@@ -133,8 +134,8 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 1).
     ## 
-    ## Gradient evaluation took 0.000105 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 1.05 seconds.
+    ## Gradient evaluation took 8.5e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.85 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -151,15 +152,15 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 1.40391 seconds (Warm-up)
-    ##                0.872088 seconds (Sampling)
-    ##                2.276 seconds (Total)
+    ##  Elapsed Time: 1.2307 seconds (Warm-up)
+    ##                0.90481 seconds (Sampling)
+    ##                2.13551 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 2).
     ## 
-    ## Gradient evaluation took 5.8e-05 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 0.58 seconds.
+    ## Gradient evaluation took 5.5e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.55 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -176,15 +177,15 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 0.889409 seconds (Warm-up)
-    ##                0.877589 seconds (Sampling)
-    ##                1.767 seconds (Total)
+    ##  Elapsed Time: 0.909829 seconds (Warm-up)
+    ##                0.886266 seconds (Sampling)
+    ##                1.79609 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 3).
     ## 
-    ## Gradient evaluation took 5.6e-05 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 0.56 seconds.
+    ## Gradient evaluation took 5.7e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.57 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -201,15 +202,15 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 1.03895 seconds (Warm-up)
-    ##                0.864026 seconds (Sampling)
-    ##                1.90298 seconds (Total)
+    ##  Elapsed Time: 0.909054 seconds (Warm-up)
+    ##                0.912094 seconds (Sampling)
+    ##                1.82115 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 4).
     ## 
-    ## Gradient evaluation took 5.9e-05 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 0.59 seconds.
+    ## Gradient evaluation took 6.9e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.69 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -226,9 +227,9 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 0.998411 seconds (Warm-up)
-    ##                0.865081 seconds (Sampling)
-    ##                1.86349 seconds (Total)
+    ##  Elapsed Time: 0.940246 seconds (Warm-up)
+    ##                0.925231 seconds (Sampling)
+    ##                1.86548 seconds (Total)
 
 ``` r
 summary(fit.all)
@@ -269,16 +270,16 @@ summary(fit.all)
     ## x.18              0.6     0.0     0.5     0.5     0.6     0.6     0.6
     ## x.19              0.5     0.0     0.5     0.5     0.5     0.5     0.5
     ## x.20              0.7     0.0     0.7     0.7     0.7     0.7     0.8
-    ## mean_PPD         40.1     0.6    38.9    39.6    40.1    40.5    41.3
-    ## log-posterior -2264.9     3.3 -2272.1 -2266.8 -2264.6 -2262.6 -2259.6
+    ## mean_PPD         40.1     0.6    38.8    39.6    40.1    40.5    41.3
+    ## log-posterior -2264.8     3.2 -2271.8 -2266.8 -2264.4 -2262.4 -2259.4
     ## 
     ## Diagnostics:
     ##               mcse Rhat n_eff
-    ## (Intercept)   0.0  1.0  1789 
+    ## (Intercept)   0.0  1.0  2263 
     ## x.1           0.0  1.0  4000 
     ## x.2           0.0  1.0  4000 
     ## x.3           0.0  1.0  4000 
-    ## x.4           0.0  1.0  3587 
+    ## x.4           0.0  1.0  4000 
     ## x.5           0.0  1.0  4000 
     ## x.6           0.0  1.0  4000 
     ## x.7           0.0  1.0  4000 
@@ -290,13 +291,13 @@ summary(fit.all)
     ## x.13          0.0  1.0  4000 
     ## x.14          0.0  1.0  4000 
     ## x.15          0.0  1.0  4000 
-    ## x.16          0.0  1.0  2583 
+    ## x.16          0.0  1.0  3015 
     ## x.17          0.0  1.0  4000 
     ## x.18          0.0  1.0  4000 
     ## x.19          0.0  1.0  4000 
-    ## x.20          0.0  1.0  2821 
+    ## x.20          0.0  1.0  3135 
     ## mean_PPD      0.0  1.0  4000 
-    ## log-posterior 0.1  1.0  1530 
+    ## log-posterior 0.1  1.0  1625 
     ## 
     ## For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).
 
@@ -330,16 +331,16 @@ fit <- poisson.spike(y ~ ., data = dat, niter = niter,
                      prior = prior)
 ```
 
-    ## =-=-=-=-= Iteration 0 Sat Apr 14 15:59:24 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 1000 Sat Apr 14 15:59:25 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 2000 Sat Apr 14 15:59:26 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 3000 Sat Apr 14 15:59:27 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 4000 Sat Apr 14 15:59:28 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 5000 Sat Apr 14 15:59:29 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 6000 Sat Apr 14 15:59:30 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 7000 Sat Apr 14 15:59:31 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 8000 Sat Apr 14 15:59:32 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 9000 Sat Apr 14 15:59:33 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 0 Sat May  5 13:21:29 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 1000 Sat May  5 13:21:30 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 2000 Sat May  5 13:21:31 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 3000 Sat May  5 13:21:32 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 4000 Sat May  5 13:21:33 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 5000 Sat May  5 13:21:34 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 6000 Sat May  5 13:21:36 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 7000 Sat May  5 13:21:37 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 8000 Sat May  5 13:21:39 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 9000 Sat May  5 13:21:40 2018 =-=-=-=-=
 
 ``` r
 summary(fit)

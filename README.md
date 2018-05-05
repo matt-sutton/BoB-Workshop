@@ -5,16 +5,25 @@ Bayes on the Beach Workshop 2017
 Workshop Aims:
 --------------
 
--   Review some Bayesian Variable Selection methods (O’Hara and Sillanpaa sugested material)
--   Some coding in R (Visualisation | Coding | Methods)
+-   Review some Bayesian Variable Selection methods (O’Hara and Sillanpaa suggested material)
+-   Some coding in R (Visualization | Coding | Methods)
 -   Analysis of a simple model with variable selection.
 
-The task
+### Pages to visit
+
+The Workshop is now complete. Thanks to all the participants: Sam, Grace, Anton, Saras, Anthony, Nick Golding, Leah, Andres for a great workshop!
+
+-   [An example solution](Example-Solution/Example-Kuo-Mallick.md)
+-   [Resources for the workshop](Slides-And-Resources/README.md)
+-   [Sour dough (Variable selection visualisation)](Visualisation/sourdough.md)
+-   [Exploration and modelling](Modelling/poisson.md)
+
+The Task
 --------
 
 ### Data Model:
 
-<img src="datamodel.png" width="220px" style="display: block; margin: auto;" />
+<img src="datamodel.png" width="290px" style="display: block; margin: auto;" />
 
 R code for simulation from data model (O’Hara and Sillanpaa):
 
@@ -41,14 +50,16 @@ dataset <- data.frame(y=y, x=x)
 #write.csv(x = dataset, file = "simulated_data.csv", row.names = F)
 ```
 
-The regression parameters *θ*<sub>*j*</sub> have a mean of 0.3, rough range (0, 0.6). While not exact zeros, the aim is to investigate the inference (eg probability of inclusion) and sparse estiamtion in Bayesian framework.
+The regression parameters *θ*<sub>*j*</sub> have a mean of 0.3, rough range (0, 0.6). While not exact zeros, the aim is to investigate the inference (eg probability of inclusion) and sparse estimation in Bayesian framework.
 
 ``` r
 #plot(1:length(theta), theta, xlab = "Regression parameter", ylab = "Theta")
 ```
 
-### Modelling
+### Modelling for variable seleciton
 
-Priors for the model (eq. 3, 4 of O’Hara and Sillanpaa) <img src="priors.png" width="220px" style="display: block; margin: auto;" />
+Recommended priors for the model (eq. 3, 4 of O’Hara and Sillanpaa)
 
-Methods implemented in Bugs were provided in supplment for the original paper. See [supplement.html](supplement.html).
+<img src="priors.png" width="370px" style="display: block; margin: auto;" />
+
+Each *θ*<sub>*j*</sub> has a spike-slab prior with spike at zero and slab elsewhere. Introduce an auxilary indicator to indicate presence of vat variable and auxilary *β*<sub>*j*</sub> to indicate effect size.

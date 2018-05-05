@@ -1,10 +1,11 @@
 ---
-title: "R Notebook"
+title: "Exploration and Boom Spike-Slab package"
+author: Alex Cooper
 output: github_document
 ---
 
 ```{r}
-dat <- read.csv('simulated_data.csv')
+dat <- read.csv('../simulated_data.csv')
 ```
 
 Variance-covariance matrix of the data. It's pretty much diagonal!
