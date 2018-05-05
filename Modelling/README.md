@@ -16,7 +16,7 @@ Sigma.hat <- 1/N * t(X) %*% X
 image(Sigma.hat[p:1,], main='Data covariance matrix')
 ```
 
-![](poisson_files/figure-markdown_github/options(width=180)-1.png)
+![](README_files/figure-markdown_github/options(width=180)-1.png)
 
 ``` r
 round(Sigma.hat[1:10, 1:10], 1)
@@ -38,7 +38,7 @@ round(Sigma.hat[1:10, 1:10], 1)
 pairs(X[,1:5])
 ```
 
-![](poisson_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
 Data are simulated using the following model:
 $$ y\_i \\sim {\\rm Pois}\\left(\\Lambda(\\eta\_i)\\right), \\quad \\eta\_i = x\_i^\\top\\theta+\\varepsilon\_i.
@@ -98,7 +98,7 @@ summary(fit.all)
 image(vcov(fit.all), main = 'Poisson regression estimator: covariance')
 ```
 
-![](poisson_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
 ``` r
 # SparseM.image
@@ -152,15 +152,15 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 1.2307 seconds (Warm-up)
-    ##                0.90481 seconds (Sampling)
-    ##                2.13551 seconds (Total)
+    ##  Elapsed Time: 1.15841 seconds (Warm-up)
+    ##                0.897053 seconds (Sampling)
+    ##                2.05546 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 2).
     ## 
-    ## Gradient evaluation took 5.5e-05 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 0.55 seconds.
+    ## Gradient evaluation took 5.8e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.58 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -177,9 +177,9 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 0.909829 seconds (Warm-up)
-    ##                0.886266 seconds (Sampling)
-    ##                1.79609 seconds (Total)
+    ##  Elapsed Time: 1.09723 seconds (Warm-up)
+    ##                0.878115 seconds (Sampling)
+    ##                1.97535 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 3).
@@ -202,15 +202,15 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 0.909054 seconds (Warm-up)
-    ##                0.912094 seconds (Sampling)
-    ##                1.82115 seconds (Total)
+    ##  Elapsed Time: 0.934908 seconds (Warm-up)
+    ##                0.843397 seconds (Sampling)
+    ##                1.77831 seconds (Total)
     ## 
     ## 
     ## SAMPLING FOR MODEL 'count' NOW (CHAIN 4).
     ## 
-    ## Gradient evaluation took 6.9e-05 seconds
-    ## 1000 transitions using 10 leapfrog steps per transition would take 0.69 seconds.
+    ## Gradient evaluation took 5.6e-05 seconds
+    ## 1000 transitions using 10 leapfrog steps per transition would take 0.56 seconds.
     ## Adjust your expectations accordingly!
     ## 
     ## 
@@ -227,9 +227,9 @@ fit.all <- stan_glm(y ~ ., data = dat, family = 'poisson',
     ## Iteration: 1800 / 2000 [ 90%]  (Sampling)
     ## Iteration: 2000 / 2000 [100%]  (Sampling)
     ## 
-    ##  Elapsed Time: 0.940246 seconds (Warm-up)
-    ##                0.925231 seconds (Sampling)
-    ##                1.86548 seconds (Total)
+    ##  Elapsed Time: 1.21344 seconds (Warm-up)
+    ##                0.900475 seconds (Sampling)
+    ##                2.11392 seconds (Total)
 
 ``` r
 summary(fit.all)
@@ -271,11 +271,11 @@ summary(fit.all)
     ## x.19              0.5     0.0     0.5     0.5     0.5     0.5     0.5
     ## x.20              0.7     0.0     0.7     0.7     0.7     0.7     0.8
     ## mean_PPD         40.1     0.6    38.8    39.6    40.1    40.5    41.3
-    ## log-posterior -2264.8     3.2 -2271.8 -2266.8 -2264.4 -2262.4 -2259.4
+    ## log-posterior -2264.8     3.2 -2271.9 -2266.7 -2264.4 -2262.4 -2259.5
     ## 
     ## Diagnostics:
     ##               mcse Rhat n_eff
-    ## (Intercept)   0.0  1.0  2263 
+    ## (Intercept)   0.0  1.0  2051 
     ## x.1           0.0  1.0  4000 
     ## x.2           0.0  1.0  4000 
     ## x.3           0.0  1.0  4000 
@@ -291,13 +291,13 @@ summary(fit.all)
     ## x.13          0.0  1.0  4000 
     ## x.14          0.0  1.0  4000 
     ## x.15          0.0  1.0  4000 
-    ## x.16          0.0  1.0  3015 
+    ## x.16          0.0  1.0  2950 
     ## x.17          0.0  1.0  4000 
     ## x.18          0.0  1.0  4000 
     ## x.19          0.0  1.0  4000 
-    ## x.20          0.0  1.0  3135 
+    ## x.20          0.0  1.0  4000 
     ## mean_PPD      0.0  1.0  4000 
-    ## log-posterior 0.1  1.0  1625 
+    ## log-posterior 0.1  1.0  1513 
     ## 
     ## For each parameter, mcse is Monte Carlo standard error, n_eff is a crude measure of effective sample size, and Rhat is the potential scale reduction factor on split chains (at convergence Rhat=1).
 
@@ -331,16 +331,16 @@ fit <- poisson.spike(y ~ ., data = dat, niter = niter,
                      prior = prior)
 ```
 
-    ## =-=-=-=-= Iteration 0 Sat May  5 13:21:29 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 1000 Sat May  5 13:21:30 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 2000 Sat May  5 13:21:31 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 3000 Sat May  5 13:21:32 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 4000 Sat May  5 13:21:33 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 5000 Sat May  5 13:21:34 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 6000 Sat May  5 13:21:36 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 7000 Sat May  5 13:21:37 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 8000 Sat May  5 13:21:39 2018 =-=-=-=-=
-    ## =-=-=-=-= Iteration 9000 Sat May  5 13:21:40 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 0 Sat May  5 13:52:01 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 1000 Sat May  5 13:52:02 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 2000 Sat May  5 13:52:03 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 3000 Sat May  5 13:52:05 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 4000 Sat May  5 13:52:06 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 5000 Sat May  5 13:52:07 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 6000 Sat May  5 13:52:08 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 7000 Sat May  5 13:52:09 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 8000 Sat May  5 13:52:10 2018 =-=-=-=-=
+    ## =-=-=-=-= Iteration 9000 Sat May  5 13:52:11 2018 =-=-=-=-=
 
 ``` r
 summary(fit)
@@ -359,7 +359,7 @@ summary(fit)
 plot(fit)
 ```
 
-![](poisson_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 library(coda)
@@ -514,4 +514,4 @@ summary(fit.ss)
 bayesplot::mcmc_trace(fit$beta, n_warmup = niter/4)
 ```
 
-![](poisson_files/figure-markdown_github/unnamed-chunk-10-1.png)
+![](README_files/figure-markdown_github/unnamed-chunk-10-1.png)

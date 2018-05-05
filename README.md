@@ -13,10 +13,10 @@ Workshop Aims:
 
 The Workshop is now complete. Thanks to all the participants: Sam, Grace, Anton, Saras, Anthony, Nick Golding, Leah, Andres for a great workshop!
 
--   [An example solution](Example-Solution/Example-Kuo-Mallick.md)
--   [Resources for the workshop](Slides-And-Resources/README.md)
+-   [An example solution](Example-Solution/)
+-   [Resources for the workshop](Slides-And-Resources/)
 -   [Sour dough (Variable selection visualisation)](Visualisation/sourdough.md)
--   [Exploration and modelling](Modelling/poisson.md)
+-   [Exploration and modelling](Modelling/)
 
 The Task
 --------
