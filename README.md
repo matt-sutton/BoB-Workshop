@@ -15,7 +15,7 @@ The Workshop is now complete. Thanks to all the participants: Sam, Grace, Anton,
 
 -   [An example solution](Example-Solution/)
 -   [Resources for the workshop](Slides-And-Resources/)
--   [Sour dough (Variable selection visualisation)](Visualisation/sourdough.md)
+-   [Sour dough (Variable selection visualisation)](Visualisation/)
 -   [Exploration and modelling](Modelling/)
 
 The Task
